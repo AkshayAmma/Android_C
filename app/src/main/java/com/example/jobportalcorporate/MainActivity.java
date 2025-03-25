@@ -2,18 +2,17 @@ package com.example.jobportalcorporate;
 
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
+
 import androidx.appcompat.app.AppCompatActivity;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
@@ -24,8 +23,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        emailid=(EditText)findViewById(R.id.et_signin_id);
-        pwd=(EditText)findViewById(R.id.et_signin_pwd);
+        emailid= findViewById(R.id.et_signin_id);
+        pwd= findViewById(R.id.et_signin_pwd);
         mAuth= FirebaseAuth.getInstance();
         findViewById(R.id.tv_signin).setOnClickListener(this);
         findViewById(R.id.btn_signin).setOnClickListener(this);
@@ -65,19 +64,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             return;
         }
 
-        mAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if(task.isSuccessful()){
-                    Toast.makeText(com.example.jobportalcorporate.MainActivity.this, "Logging In.........", Toast.LENGTH_SHORT).show();
-                    emailid.setText("");
-                    pwd.setText("");
-                    Intent intent=new Intent(com.example.jobportalcorporate.MainActivity.this,ProfileActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                }else {
-                    Toast.makeText(com.example.jobportalcorporate.MainActivity.this,task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                }
+        mAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(task -> {
+            if(task.isSuccessful()){
+                Toast.makeText(MainActivity.this, "Logging In.........", Toast.LENGTH_SHORT).show();
+                emailid.setText("");
+                pwd.setText("");
+                Intent intent=new Intent(MainActivity.this,ProfileActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+            }else {
+                Toast.makeText(MainActivity.this, Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
 

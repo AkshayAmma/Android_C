@@ -1,10 +1,10 @@
 package com.example.jobportalcorporate;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import com.google.android.material.navigation.NavigationView;
 
-import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -50,20 +50,20 @@ public class ProfileActivity extends AppCompatActivity
         setContentView(R.layout.activity_profile);
 
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        final EditText searchquery = (EditText) findViewById(R.id.searchquery);
-        ImageView search = (ImageView) findViewById(R.id.search);
+        final EditText searchquery = findViewById(R.id.searchquery);
+        ImageView search = findViewById(R.id.search);
 
 
 
@@ -71,14 +71,14 @@ public class ProfileActivity extends AppCompatActivity
 
         myRef.keepSynced(true);
 
-        rcv=(RecyclerView)findViewById(R.id.rcv);
+        rcv= findViewById(R.id.rcv);
         RecyclerView.LayoutManager manager=new LinearLayoutManager(com.example.jobportalcorporate.ProfileActivity.this);
         rcv.setLayoutManager(manager);
 
 
         myRef.addChildEventListener(new ChildEventListener() {
             @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, String s) {
                 try {
 
                     String achievements = dataSnapshot.child("achievements").getValue(String.class);
@@ -129,44 +129,39 @@ public class ProfileActivity extends AppCompatActivity
                     list.setCv(cv);
 
                     candilist.add(list);
-                    if (candilist.size() > 0) {
-                        rcv.setAdapter(adapter);
-                    }
-                }catch (Exception e){}
+                    rcv.setAdapter(adapter);
+                }catch (Exception ignored){}
 
             }
 
             @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, String s) {
 
             }
 
             @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
 
             }
 
             @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, String s) {
 
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError databaseError) {
                 Toast.makeText(com.example.jobportalcorporate.ProfileActivity.this, "Error", Toast.LENGTH_SHORT).show();
             }
         });
-        search.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        search.setOnClickListener(v -> {
 
-                String s = searchquery.getText().toString();
-                if (s.isEmpty()) {
-                    Toast.makeText(com.example.jobportalcorporate.ProfileActivity.this, "No Result", Toast.LENGTH_SHORT).show();
+            String s = searchquery.getText().toString();
+            if (s.isEmpty()) {
+                Toast.makeText(ProfileActivity.this, "No Result", Toast.LENGTH_SHORT).show();
 
-                } else {
-                    filter(s);
-                }
+            } else {
+                filter(s);
             }
         });
 
@@ -195,7 +190,7 @@ public class ProfileActivity extends AppCompatActivity
     }
 
 
-    public  class MyViewHolder extends RecyclerView.ViewHolder{
+    public static class MyViewHolder extends RecyclerView.ViewHolder{
 
         TextView name,skills,certifications,workexp;
         public MyViewHolder(View itemView) {
@@ -214,13 +209,13 @@ public class ProfileActivity extends AppCompatActivity
 
     public  class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
 
+        @NonNull
         @Override
-        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             LayoutInflater inflater = getLayoutInflater();
             View v = inflater.inflate(R.layout.candidatelist, parent, false);
-            MyViewHolder holder = new MyViewHolder(v);
 
-            return holder;
+            return new MyViewHolder(v);
         }
 
         @Override
@@ -233,61 +228,58 @@ public class ProfileActivity extends AppCompatActivity
             holder.certifications.setText(list.getCertifications());
             holder.workexp.setText(list.getWorkexp());
             
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    String achievements=list.getAchievements();
-                    String address=list.getAddress();
-                    String certifications=list.getCertifications();
-                    String city=list.getCity();
-                    String dob=list.getDob();
-                    String email=list.getEmail();
-                    String name=list.getName();
-                    String pgcourse=list.getPgcourse();
-                    String pgmarks=list.getPgmarks();
-                    String pgyear=list.getPgyear();
-                    String ugcourse=list.getUgcourse();
-                    String ugmarks=list.getUgmarks();
-                    String ugyear=list.getUgyear();
-                    String pincode=list.getPincode();
-                    String sex=list.getSex();
-                    String skills=list.getSkills();
-                    String workexp=list.getWorkexp();
-                    String xiimarks=list.getXiimarks();
-                    String xiiyear=list.getXiiyear();
-                    String xmarks=list.getXmarks();
-                    String xyear=list.getXyear();
-                    String cv=list.getCv();
+            holder.itemView.setOnClickListener(v -> {
+                String achievements=list.getAchievements();
+                String address=list.getAddress();
+                String certifications=list.getCertifications();
+                String city=list.getCity();
+                String dob=list.getDob();
+                String email=list.getEmail();
+                String name=list.getName();
+                String pgcourse=list.getPgcourse();
+                String pgmarks=list.getPgmarks();
+                String pgyear=list.getPgyear();
+                String ugcourse=list.getUgcourse();
+                String ugmarks=list.getUgmarks();
+                String ugyear=list.getUgyear();
+                String pincode=list.getPincode();
+                String sex=list.getSex();
+                String skills=list.getSkills();
+                String workexp=list.getWorkexp();
+                String xiimarks=list.getXiimarks();
+                String xiiyear=list.getXiiyear();
+                String xmarks=list.getXmarks();
+                String xyear=list.getXyear();
+                String cv=list.getCv();
 
-                    Intent intent = new Intent(com.example.jobportalcorporate.ProfileActivity.this, com.example.jobportalcorporate.CandidateProfile.class);
+                Intent intent = new Intent(ProfileActivity.this, CandidateProfile.class);
 
 
-                    intent.putExtra("name", name);
-                    intent.putExtra("achievements", achievements);
-                    intent.putExtra("email", email);
-                    intent.putExtra("workexp", workexp);
-                    intent.putExtra("address", address);
-                    intent.putExtra("certifications", certifications);
-                    intent.putExtra("city", city);
-                    intent.putExtra("dob", dob);
-                    intent.putExtra("skills", skills);
-                    intent.putExtra("pgcourse", pgcourse);
-                    intent.putExtra("pgmarks", pgmarks);
-                    intent.putExtra("pgyear", pgyear);
-                    intent.putExtra("ugcourse", ugcourse);
-                    intent.putExtra("ugmarks", ugmarks);
-                    intent.putExtra("ugyear", ugyear);
-                    intent.putExtra("pincode", pincode);
-                    intent.putExtra("sex", sex);
-                    intent.putExtra("xiimarks", xiimarks);
-                    intent.putExtra("xiiyear", xiiyear);
-                    intent.putExtra("xmarks", xmarks);
-                    intent.putExtra("xyear", xyear);
-                    intent.putExtra("cv", cv);
+                intent.putExtra("name", name);
+                intent.putExtra("achievements", achievements);
+                intent.putExtra("email", email);
+                intent.putExtra("workexp", workexp);
+                intent.putExtra("address", address);
+                intent.putExtra("certifications", certifications);
+                intent.putExtra("city", city);
+                intent.putExtra("dob", dob);
+                intent.putExtra("skills", skills);
+                intent.putExtra("pgcourse", pgcourse);
+                intent.putExtra("pgmarks", pgmarks);
+                intent.putExtra("pgyear", pgyear);
+                intent.putExtra("ugcourse", ugcourse);
+                intent.putExtra("ugmarks", ugmarks);
+                intent.putExtra("ugyear", ugyear);
+                intent.putExtra("pincode", pincode);
+                intent.putExtra("sex", sex);
+                intent.putExtra("xiimarks", xiimarks);
+                intent.putExtra("xiiyear", xiiyear);
+                intent.putExtra("xmarks", xmarks);
+                intent.putExtra("xyear", xyear);
+                intent.putExtra("cv", cv);
 
 
-                    startActivity(intent);
-                }
+                startActivity(intent);
             });
         }
 
@@ -295,6 +287,7 @@ public class ProfileActivity extends AppCompatActivity
         public int getItemCount() {
             return candilist.size();
         }
+        @SuppressLint("NotifyDataSetChanged")
         public void filterlist(ArrayList<com.example.jobportalcorporate.CandidateList> filteredlist){
             candilist =filteredlist;
             adapter.notifyDataSetChanged();
@@ -333,7 +326,6 @@ public class ProfileActivity extends AppCompatActivity
         return true;
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
@@ -349,7 +341,7 @@ public class ProfileActivity extends AppCompatActivity
             }
 
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }

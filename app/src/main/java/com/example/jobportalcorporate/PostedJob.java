@@ -41,13 +41,13 @@ public class PostedJob extends AppCompatActivity {
         FirebaseUser user=mAuth.getCurrentUser();
         myRef= FirebaseDatabase.getInstance().getReference("Jobs");
         String uid=user.getUid();
-        postedjobrcv=(RecyclerView)findViewById(R.id.postedjob_rcv);
+        postedjobrcv= findViewById(R.id.postedjob_rcv);
         RecyclerView.LayoutManager manager = new LinearLayoutManager(com.example.jobportalcorporate.PostedJob.this);
         postedjobrcv.setLayoutManager(manager);
 
         myRef.orderByChild("uid").equalTo(uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot childDatasnapshot : dataSnapshot.getChildren()) {
                     String contact = childDatasnapshot.child("contact").getValue(String.class);
                     String date=childDatasnapshot.child("date").getValue(String.class);
@@ -79,23 +79,21 @@ public class PostedJob extends AppCompatActivity {
 
                     postedjoblist.add(data);
 
-                   
-                    if (postedjoblist.size() > 0) {
-                        postedjobrcv.setAdapter(postedjobadapter);
-                    }
+
+                    postedjobrcv.setAdapter(postedjobadapter);
 
                 }
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
         });
 
     }
 
-    public  class PostedjobViewHolder extends RecyclerView.ViewHolder{
+    public static class PostedjobViewHolder extends RecyclerView.ViewHolder{
 
         Button deljob;
         TextView company_name
@@ -120,12 +118,12 @@ public class PostedJob extends AppCompatActivity {
     }
     public class PostedjobAdapter extends RecyclerView.Adapter<PostedjobViewHolder>{
 
+        @NonNull
         @Override
-        public PostedjobViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public PostedjobViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             LayoutInflater inflater=getLayoutInflater();
             View v=inflater.inflate(R.layout.joblist,parent,false);
-            PostedjobViewHolder postedjobViewHolder=new PostedjobViewHolder(v);
-            return postedjobViewHolder;
+            return new PostedjobViewHolder(v);
         }
 
         @Override
@@ -144,23 +142,17 @@ public class PostedJob extends AppCompatActivity {
             holder.location.setText(list.getLocation());
             holder.date.setText(list.getDate());
 
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    String jobid=list.getJobid();
-                    Intent intent=new Intent(com.example.jobportalcorporate.PostedJob.this, com.example.jobportalcorporate.AppliedCandidates.class);
-                    intent.putExtra("jobid",jobid);
-                    startActivity(intent);
-                }
+            holder.itemView.setOnClickListener(v -> {
+                String jobid=list.getJobid();
+                Intent intent=new Intent(PostedJob.this, AppliedCandidates.class);
+                intent.putExtra("jobid",jobid);
+                startActivity(intent);
             });
-            holder.deljob.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    String deljob=list.getJobid();
-                    myRef.child(deljob).removeValue();
-                    Toast.makeText(com.example.jobportalcorporate.PostedJob.this, "JOB DELETED", Toast.LENGTH_SHORT).show();
+            holder.deljob.setOnClickListener(v -> {
+                String deljob=list.getJobid();
+                myRef.child(deljob).removeValue();
+                Toast.makeText(PostedJob.this, "JOB DELETED", Toast.LENGTH_SHORT).show();
 
-                }
             });
         }
 

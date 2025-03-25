@@ -6,6 +6,14 @@
         <entry key="Firebase Crashlytics">
           <value>
             <InsightsFilterSettings>
+              <option name="connection">
+                <ConnectionSetting>
+                  <option name="appId" value="com.example.jobportalcorporate" />
+                  <option name="mobileSdkAppId" value="1:583599922582:android:73fe21fa8dff99f80751b7" />
+                  <option name="projectId" value="job-portal-e-9c0a8" />
+                  <option name="projectNumber" value="583599922582" />
+                </ConnectionSetting>
+              </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />
               <option name="timeIntervalDays" value="THIRTY_DAYS" />
               <option name="visibilityType" value="ALL" />

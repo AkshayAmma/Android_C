@@ -4,10 +4,12 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
-import android.view.View;
+
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.Objects;
 
 public class CandidateProfile extends AppCompatActivity {
     TextView tv_name,tv_sex, tv_city,tv_address,
@@ -21,30 +23,30 @@ public class CandidateProfile extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_candidate_profile);
-        tv_name=(TextView)findViewById(R.id.tv_name);
-        tv_sex=(TextView)findViewById(R.id.tv_sex);
-        tv_email=(TextView)findViewById(R.id.tv_email);
-        tv_city=(TextView)findViewById(R.id.tv_city);
-        tv_address=(TextView)findViewById(R.id.tv_address);
-        tv_pincode=(TextView)findViewById(R.id.tv_pincode);
-        tv_10marks=(TextView)findViewById(R.id.tv_10marks);
-        tv_10year=(TextView)findViewById(R.id.tv_10year);
-        tv_12marks=(TextView)findViewById(R.id.tv_12marks);
-        tv_12year=(TextView)findViewById(R.id.tv_12year);
-        tv_ugcourse=(TextView)findViewById(R.id.tv_ugcourse);
-        tv_ugmarks=(TextView)findViewById(R.id.tv_ugmarks);
-        tv_ugyear=(TextView)findViewById(R.id.tv_ugyear);
-        tv_pgcourse=(TextView)findViewById(R.id.tv_pgcourse);
-        tv_pgmarks=(TextView)findViewById(R.id.tv_pgmarks);
-        tv_pgyear=(TextView)findViewById(R.id.tv_pgyear);
-        tv_skills=(TextView)findViewById(R.id.tv_skills);
-        tv_achievement=(TextView)findViewById(R.id.tv_achievement);
-        tv_certification=(TextView)findViewById(R.id.tv_certification);
-        tv_workexp=(TextView)findViewById(R.id.tv_workexp);
-        tv_dob=(TextView)findViewById(R.id.tv_dob);
-        downloadcv=(Button)findViewById(R.id.btn_downcv);
+        tv_name= findViewById(R.id.tv_name);
+        tv_sex= findViewById(R.id.tv_sex);
+        tv_email= findViewById(R.id.tv_email);
+        tv_city= findViewById(R.id.tv_city);
+        tv_address= findViewById(R.id.tv_address);
+        tv_pincode= findViewById(R.id.tv_pincode);
+        tv_10marks= findViewById(R.id.tv_10marks);
+        tv_10year= findViewById(R.id.tv_10year);
+        tv_12marks= findViewById(R.id.tv_12marks);
+        tv_12year= findViewById(R.id.tv_12year);
+        tv_ugcourse= findViewById(R.id.tv_ugcourse);
+        tv_ugmarks= findViewById(R.id.tv_ugmarks);
+        tv_ugyear= findViewById(R.id.tv_ugyear);
+        tv_pgcourse= findViewById(R.id.tv_pgcourse);
+        tv_pgmarks= findViewById(R.id.tv_pgmarks);
+        tv_pgyear= findViewById(R.id.tv_pgyear);
+        tv_skills= findViewById(R.id.tv_skills);
+        tv_achievement= findViewById(R.id.tv_achievement);
+        tv_certification= findViewById(R.id.tv_certification);
+        tv_workexp= findViewById(R.id.tv_workexp);
+        tv_dob= findViewById(R.id.tv_dob);
+        downloadcv= findViewById(R.id.btn_downcv);
 
-        String name=getIntent().getExtras().getString("name");
+        String name= Objects.requireNonNull(getIntent().getExtras()).getString("name");
         String sex=getIntent().getExtras().getString("sex");
         String city=getIntent().getExtras().getString("city");
         String address=getIntent().getExtras().getString("address");
@@ -93,20 +95,17 @@ public class CandidateProfile extends AppCompatActivity {
         tv_email.setText(email);
 
 
-        downloadcv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                    try {
+        downloadcv.setOnClickListener(v -> {
+                try {
 
-                        Intent intent = new Intent(Intent.ACTION_VIEW);
-                        intent.setData(Uri.parse(cv));
-                        startActivity(intent);
-                    }catch (Exception e){
-                        String error="No Cv";
-                        Toast.makeText(com.example.jobportalcorporate.CandidateProfile.this, error, Toast.LENGTH_SHORT).show();
-                    }
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(Uri.parse(cv));
+                    startActivity(intent);
+                }catch (Exception e){
+                    String error="No Cv";
+                    Toast.makeText(CandidateProfile.this, error, Toast.LENGTH_SHORT).show();
+                }
 
-            }
         });
 
     }

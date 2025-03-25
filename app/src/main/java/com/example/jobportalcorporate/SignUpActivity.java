@@ -2,18 +2,17 @@ package com.example.jobportalcorporate;
 
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
+
 import androidx.appcompat.app.AppCompatActivity;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+
+import java.util.Objects;
 
 public class SignUpActivity extends AppCompatActivity implements View.OnClickListener{
     EditText mailid,pwd,pwd1;
@@ -23,9 +22,9 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
-        mailid=(EditText)findViewById(R.id.et_signup_email);
-        pwd=(EditText)findViewById(R.id.et_signup_pwd);
-        pwd1=(EditText)findViewById(R.id.et_signup_pwd1);
+        mailid= findViewById(R.id.et_signup_email);
+        pwd= findViewById(R.id.et_signup_pwd);
+        pwd1= findViewById(R.id.et_signup_pwd1);
 
         mAuth=FirebaseAuth.getInstance();
         findViewById(R.id.btn_signup).setOnClickListener(this);
@@ -75,25 +74,22 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
 
 
-        mAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()){
+        mAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(task -> {
+            if (task.isSuccessful()){
 
-                    Toast.makeText(com.example.jobportalcorporate.SignUpActivity.this, "Registration Successful", Toast.LENGTH_SHORT).show();
-                    FirebaseAuth.getInstance().signOut();
-                    finish();
-                    Intent intent=new Intent(com.example.jobportalcorporate.SignUpActivity.this, com.example.jobportalcorporate.MainActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
+                Toast.makeText(SignUpActivity.this, "Registration Successful", Toast.LENGTH_SHORT).show();
+                FirebaseAuth.getInstance().signOut();
+                finish();
+                Intent intent=new Intent(SignUpActivity.this, MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
 
-                }else {
-                    if (task.getException() instanceof FirebaseAuthUserCollisionException){
-                        Toast.makeText(com.example.jobportalcorporate.SignUpActivity.this, "Email is already registered", Toast.LENGTH_SHORT).show();
-                    }
-                    else {
-                        Toast.makeText(com.example.jobportalcorporate.SignUpActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                    }
+            }else {
+                if (task.getException() instanceof FirebaseAuthUserCollisionException){
+                    Toast.makeText(SignUpActivity.this, "Email is already registered", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    Toast.makeText(SignUpActivity.this, Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
         });

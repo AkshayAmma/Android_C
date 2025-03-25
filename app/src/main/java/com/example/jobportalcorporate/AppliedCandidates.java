@@ -21,6 +21,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class AppliedCandidates extends AppCompatActivity {
 
@@ -34,12 +35,12 @@ public class AppliedCandidates extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_applied_candidates);
 
-        final String jobid=getIntent().getExtras().getString("jobid");
+        final String jobid= Objects.requireNonNull(getIntent().getExtras()).getString("jobid");
 
 
         myRef= FirebaseDatabase.getInstance().getReference("Users");
 
-        rcv=(RecyclerView)findViewById(R.id.applied_rcv);
+        rcv= findViewById(R.id.applied_rcv);
         RecyclerView.LayoutManager manager=new LinearLayoutManager(com.example.jobportalcorporate.AppliedCandidates.this);
         rcv.setLayoutManager(manager);
 
@@ -47,13 +48,13 @@ public class AppliedCandidates extends AppCompatActivity {
 
        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
            @Override
-           public void onDataChange(DataSnapshot dataSnapshot) {
+           public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                for (DataSnapshot uniquekeySnapshot : dataSnapshot.getChildren()){
 
                    for (DataSnapshot appliedjobSnapshot : uniquekeySnapshot.child("Appliedjob").getChildren()){
 
 
-                       if (appliedjobSnapshot.getKey().equalsIgnoreCase(jobid)){
+                       if (Objects.requireNonNull(appliedjobSnapshot.getKey()).equalsIgnoreCase(jobid)){
                            try {
                                String name = uniquekeySnapshot.child("name").getValue(String.class);
                                String emailid = uniquekeySnapshot.child("email").getValue(String.class);
@@ -70,10 +71,8 @@ public class AppliedCandidates extends AppCompatActivity {
                                list.setCv(cv);
 
                                candilist.add(list);
-                               if (candilist.size() > 0) {
-                                   rcv.setAdapter(appliedcandiAdapter);
-                               }
-                           }catch (Exception e){
+                               rcv.setAdapter(appliedcandiAdapter);
+                           }catch (Exception ignored){
 
                            }
                        }
@@ -84,7 +83,7 @@ public class AppliedCandidates extends AppCompatActivity {
            }
 
            @Override
-           public void onCancelled(DatabaseError databaseError) {
+           public void onCancelled(@NonNull DatabaseError databaseError) {
                Toast.makeText(com.example.jobportalcorporate.AppliedCandidates.this, "Error", Toast.LENGTH_SHORT).show();
            }
        });
@@ -93,7 +92,7 @@ public class AppliedCandidates extends AppCompatActivity {
 
     }
 
-    public  class MyViewHolder extends RecyclerView.ViewHolder{
+    public static class MyViewHolder extends RecyclerView.ViewHolder{
 
         TextView name,skills,emailid,workexp;
         Button downcv;
@@ -121,9 +120,8 @@ public class AppliedCandidates extends AppCompatActivity {
         public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             LayoutInflater inflater = getLayoutInflater();
             View v = inflater.inflate(R.layout.appliedcandidatelist, parent, false);
-            MyViewHolder holdercandi=new MyViewHolder(v);
 
-            return holdercandi;
+            return new MyViewHolder(v);
         }
 
         @Override
@@ -138,19 +136,16 @@ public class AppliedCandidates extends AppCompatActivity {
 
             holder.workexp.setText(list.getWorkexp());
            
-            holder.downcv.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    String cv=list.getCv();
-                    try {
+            holder.downcv.setOnClickListener(v -> {
+                String cv=list.getCv();
+                try {
 
-                        Intent intent = new Intent(Intent.ACTION_VIEW);
-                        intent.setData(Uri.parse(cv));
-                        startActivity(intent);
-                    }catch (Exception e){
-                        String error="No Cv";
-                        Toast.makeText(com.example.jobportalcorporate.AppliedCandidates.this, error, Toast.LENGTH_SHORT).show();
-                    }
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(Uri.parse(cv));
+                    startActivity(intent);
+                }catch (Exception e){
+                    String error="No Cv";
+                    Toast.makeText(AppliedCandidates.this, error, Toast.LENGTH_SHORT).show();
                 }
             });
         }
